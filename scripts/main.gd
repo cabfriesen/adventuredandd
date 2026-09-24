@@ -780,7 +780,8 @@ func _add_hero_sprite(peer_id: int, cell: Vector2i) -> void:
 	var class_id := str(_heroes[peer_id].get("class_id", "warrior"))
 	sprite.texture = ArcherSprite.texture() if class_id == "archer" else WarriorSprite.texture()
 	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	sprite.scale = Vector2.ONE * (72.0 / sprite.texture.get_height())
+	if sprite.texture != null:
+		sprite.scale = Vector2.ONE * (72.0 / sprite.texture.get_height())
 	sprite.position = _center(cell)
 	sprite.z_index = 3
 	if peer_id != 1:
