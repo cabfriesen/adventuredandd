@@ -2,8 +2,30 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 GODOT="$ROOT/.tools/godot"
+VERSION="4.7.2-stable"
+URL="https://github.com/godotengine/godot/releases/download/${VERSION}/Godot_v${VERSION}_linux.x86_64.zip"
+
 if [[ ! -x "$GODOT" ]]; then
-	echo "Godot is missing at .tools/godot" >&2
-	exit 1
+	if ! command -v curl >/dev/null 2>&1 || ! command -v unzip >/dev/null 2>&1; then
+		echo "Need curl and unzip installed to download Godot." >&2
+		exit 1
+	fi
+	echo "Downloading Godot ${VERSION}..."
+	mkdir -p "$ROOT/.tools"
+	tmp="$(mktemp -d)"
+	trap 'rm -rf "$tmp"' EXIT
+	curl -fL --retry 3 -o "$tmp/godot.zip" "$URL"
+	unzip -q "$tmp/godot.zip" -d "$tmp"
+	bin="$(find "$tmp" -type f -name 'Godot_v*' ! -name '*.zip' | head -n 1)"
+	if [[ -z "$bin" ]]; then
+		echo "The Godot download did not contain the program." >&2
+		exit 1
+	fi
+	mv "$bin" "$GODOT"
+	chmod +x "$GODOT"
+	rm -rf "$tmp"
+	trap - EXIT
+	echo "Godot is ready."
 fi
+
 exec "$GODOT" --path "$ROOT" "$@"
