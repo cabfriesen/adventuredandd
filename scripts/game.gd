@@ -5,6 +5,7 @@ const PORT := 11111
 var mode := "solo"
 var session := "none"
 var chosen_class := ""
+var join_before_class := false
 var status := ""
 var map: Node = null
 var layer := "surface"

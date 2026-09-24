@@ -37,8 +37,10 @@ func _make_button(label_text: String) -> Button:
 	return button
 
 func _on_play_pressed() -> void:
+	Game.join_before_class = false
 	Game.play_solo()
 	get_tree().change_scene_to_file("res://scenes/class_select.tscn")
 
 func _on_multiplayer_pressed() -> void:
-	get_tree().change_scene_to_file("res://scenes/class_select.tscn")
+	Game.join_before_class = true
+	get_tree().change_scene_to_file("res://scenes/multiplayer.tscn")

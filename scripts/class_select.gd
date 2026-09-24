@@ -113,4 +113,7 @@ func _on_start_pressed() -> void:
 	if _picked == "":
 		return
 	Game.begin_run()
-	get_tree().change_scene_to_file("res://scenes/multiplayer.tscn")
+	if Game.join_before_class:
+		get_tree().change_scene_to_file("res://scenes/main.tscn")
+	else:
+		get_tree().change_scene_to_file("res://scenes/multiplayer.tscn")

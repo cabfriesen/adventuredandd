@@ -98,6 +98,14 @@ func _ready() -> void:
 	leave.pressed.connect(_on_back_to_class)
 	column.add_child(leave)
 	Game.join_finished.connect(_on_join_finished)
+	if Game.join_before_class:
+		_pick_box.visible = false
+		_connect_box.visible = true
+		back.visible = false
+		leave.text = "Back"
+		leave.pressed.disconnect(_on_back_to_class)
+		leave.pressed.connect(_on_back_to_title)
+		_status.text = "Host the game, or join with the host's address and port."
 
 func _add_style_button(label_text: String, style_name: String) -> void:
 	var button := _make_button(label_text)
@@ -187,7 +195,7 @@ func _on_connect_continue() -> void:
 		var err := Game.host_game(_port.text.strip_edges().to_int())
 		_status.text = Game.status
 		if err == OK:
-			get_tree().change_scene_to_file("res://scenes/main.tscn")
+			_go_after_connect()
 		return
 	if _connect_choice != "join":
 		return
@@ -201,6 +209,12 @@ func _on_join_finished(ok: bool) -> void:
 	_status.text = Game.status
 	_refresh_connect()
 	if ok and is_inside_tree():
+		_go_after_connect()
+
+func _go_after_connect() -> void:
+	if Game.join_before_class:
+		get_tree().change_scene_to_file("res://scenes/class_select.tscn")
+	else:
 		get_tree().change_scene_to_file("res://scenes/main.tscn")
 
 func _on_back_to_styles() -> void:
@@ -212,3 +226,8 @@ func _on_back_to_styles() -> void:
 func _on_back_to_class() -> void:
 	Game.play_solo()
 	get_tree().change_scene_to_file("res://scenes/class_select.tscn")
+
+func _on_back_to_title() -> void:
+	Game.join_before_class = false
+	Game.play_solo()
+	get_tree().change_scene_to_file("res://scenes/start.tscn")
