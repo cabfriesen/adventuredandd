@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+GODOT="$ROOT/.tools/godot"
+if [[ ! -x "$GODOT" ]]; then
+	echo "Godot is missing at .tools/godot" >&2
+	exit 1
+fi
+exec "$GODOT" --path "$ROOT" "$@"
