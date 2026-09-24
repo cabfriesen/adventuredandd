@@ -28,4 +28,10 @@ if [[ ! -x "$GODOT" ]]; then
 	echo "Godot is ready."
 fi
 
+cache="$ROOT/.godot/global_script_class_cache.cfg"
+if [[ ! -f "$cache" ]] || ! grep -q "WarriorSprite" "$cache"; then
+	echo "Preparing the game files..."
+	"$GODOT" --headless --path "$ROOT" --import --quit
+fi
+
 exec "$GODOT" --path "$ROOT" "$@"
